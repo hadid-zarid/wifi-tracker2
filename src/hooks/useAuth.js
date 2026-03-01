@@ -6,13 +6,16 @@ export function useAuth() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Ambil sesi user saat ini ketika web pertama kali dimuat
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       setLoading(false)
     })
 
+    // Pantau perubahan status login (jika user login / logout)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
+      setLoading(false)
     })
 
     return () => subscription.unsubscribe()

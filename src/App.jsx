@@ -6,6 +6,10 @@ import Pelanggan from './pages/Pelanggan'
 import DetailPelanggan from './pages/DetailPelanggan'
 import Pembayaran from './pages/Pembayaran'
 import Layout from './components/Layout'
+import Komplain from './pages/Komplain'
+import Paket from './pages/Paket'
+import Pengeluaran from './pages/Pengeluaran'
+import Laporan from './pages/Laporan' // Import di atas
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -26,11 +30,15 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+          <Route path="laporan" element={<Laporan />} />
           <Route index element={<Navigate to="/dashboard" />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="pelanggan" element={<Pelanggan />} />
+          <Route path="pengeluaran" element={<Pengeluaran />} />
           <Route path="pelanggan/:id" element={<DetailPelanggan />} />
           <Route path="pembayaran" element={<Pembayaran />} />
+          <Route path="komplain" element={<Komplain />} />
+          <Route path="paket" element={<Paket />} />
         </Route>
       </Routes>
     </BrowserRouter>

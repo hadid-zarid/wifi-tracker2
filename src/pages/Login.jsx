@@ -1,85 +1,107 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { Wifi, Eye, EyeOff } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Wifi, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [errorMsg, setErrorMsg] = useState(null)
+  const navigate = useNavigate()
 
-  const handleLogin = async (e) => {
+  async function handleLogin(e) {
     e.preventDefault()
     setLoading(true)
-    setError('')
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) setError('Email atau password salah')
-    setLoading(false)
+    setErrorMsg(null)
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (error) {
+      setErrorMsg('Email atau password salah. Silakan coba lagi.')
+      setLoading(false)
+    } else {
+      // Jika berhasil, arahkan ke dashboard
+      navigate('/dashboard', { replace: true })
+    }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-3xl shadow-2xl p-8">
-          <div className="text-center mb-8">
-            <div className="bg-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Wifi size={32} className="text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-slate-800">WiFi Manager</h1>
-            <p className="text-slate-400 text-sm mt-1">Masuk ke panel admin</p>
+        
+        {/* Logo & Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 text-white mb-4 shadow-lg shadow-blue-600/20">
+            <Wifi size={32} />
           </div>
+          <h1 className="text-2xl font-bold text-slate-800 mb-1">WiFi Manager Admin</h1>
+          <p className="text-slate-500 text-sm">Masuk ke panel kontrol untuk mengelola jaringan</p>
+        </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="admin@example.com"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
-              <div className="relative">
-                <input
-                  type={showPass ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12"
-                  placeholder="••••••••"
-                  required
-                />
-                <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                  {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-
-            {error && (
-              <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl">
-                {error}
+        {/* Card Form Login */}
+        <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
+          <form onSubmit={handleLogin} className="space-y-5">
+            
+            {/* Pesan Error */}
+            {errorMsg && (
+              <div className="flex items-start gap-2 bg-red-50 text-red-600 p-3 rounded-xl text-sm font-medium">
+                <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                <p>{errorMsg}</p>
               </div>
             )}
 
-            <button
-              type="submit"
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Email Address</label>
+              <div className="relative">
+                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input 
+                  type="email" 
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@wifi.com"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+              <div className="relative">
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input 
+                  type="password" 
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+                />
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl text-sm font-bold hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed mt-2 shadow-md shadow-blue-600/20"
             >
               {loading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Masuk...
-                </>
-              ) : 'Masuk'}
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <>Masuk ke Dashboard <ArrowRight size={18} /></>
+              )}
             </button>
           </form>
         </div>
+        
+        <p className="text-center text-slate-400 text-xs mt-8">
+          © {new Date().getFullYear()} Hak Cipta Dilindungi. Sistem Manajemen WiFi RT/RW Net.
+        </p>
+
       </div>
     </div>
   )

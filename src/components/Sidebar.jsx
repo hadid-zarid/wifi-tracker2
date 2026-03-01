@@ -1,10 +1,13 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, CreditCard, Wifi } from 'lucide-react'
-
+import { LayoutDashboard,FileBarChart, Users, CreditCard, Wifi, AlertTriangle, Package, Receipt } from 'lucide-react'
 const menu = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/paket', icon: Package, label: 'Data Paket' },
   { to: '/pelanggan', icon: Users, label: 'Pelanggan' },
+  { to: '/pengeluaran', icon: Receipt, label: 'Pengeluaran' },
   { to: '/pembayaran', icon: CreditCard, label: 'Pembayaran' },
+  { to: '/laporan', icon: FileBarChart, label: 'Laporan Master' },
+  { to: '/komplain', icon: AlertTriangle, label: 'Komplain' }
 ]
 
 export default function Sidebar() {
@@ -42,7 +45,7 @@ export default function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-slate-700 text-xs text-slate-500 text-center">
-        © 2025 WiFi Manager
+        © 2026 WiFi Manager
       </div>
     </aside>
   )
